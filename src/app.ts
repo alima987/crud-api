@@ -1,4 +1,4 @@
-import http, { Server } from 'http';
+import http, { Server, IncomingMessage, ServerResponse } from 'http';
 import { config } from 'dotenv';
 import cluster, { Worker } from 'cluster';
 import os from 'os';
@@ -19,6 +19,51 @@ if (process.env.MODE === 'cluster') {
       workers.push(worker);
     }
 
+    let currWorkInd = 0;
+
+    const balance = (req: IncomingMessage, res: ServerResponse) => {
+      let body = '';
+
+      req.on('data', (chunk) => {
+        body += chunk;
+      });
+
+      req.on('end', () => {
+        const worker = workers[currWorkInd];
+        currWorkInd = (currWorkInd + 1) % (CPUsnum - 1);
+
+        const reqToWorker = http.request(
+          {
+            port: +port + worker.id,
+            method: req.method,
+            path: req.url,
+            headers: { 'Content-Type': 'application/json' },
+          },
+          (respFromWorker) => {
+            let dataFromWorker = '';
+
+            respFromWorker.on('data', (chunk) => {
+              dataFromWorker += chunk;
+            });
+            respFromWorker.on('end', () => {
+              res.statusCode = respFromWorker.statusCode || 500;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(dataFromWorker);
+            });
+          }
+        );
+
+        reqToWorker.on('error', (e) => {
+          console.error(e);
+        });
+
+        reqToWorker.write(body);
+        reqToWorker.end();
+      });
+    };
+    http.createServer(balance).listen(port, () => {
+      console.log(`Balance #${process.pid} is running on port ${port}`);
+    });
     cluster.on('exit', (worker) => {
       console.log(`Worker ${worker.process.pid} died`);
       const index = workers.indexOf(worker);
