@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http';
 
-import { getUser, getUserById, createUser } from './services/users';
+import { getUser, getUserById, createUser, userUpdate } from './services/users';
 import { sendResp } from './services/users';
 
 export const router = async (req: IncomingMessage, res: ServerResponse) => {
@@ -20,6 +20,14 @@ export const router = async (req: IncomingMessage, res: ServerResponse) => {
         case 'POST':
           if (/^\/api\/users\/?$/.test(req.url)) {
             await createUser(req, res);
+          } else {
+            sendResp(res, 404, 'Invalid endpoint');
+          }
+          break;
+        case 'PUT':
+          if (/^\/api\/users\/[\w-]+$/.test(req.url)) {
+            const userId = req.url.split('/').pop();
+            userId && (await userUpdate(req, res, userId));
           } else {
             sendResp(res, 404, 'Invalid endpoint');
           }
