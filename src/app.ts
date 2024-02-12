@@ -36,7 +36,7 @@ if (process.env.MODE === 'cluster') {
       console.log(`Worker #${process.pid} received request`);
     });
 
-    const port = 3000 + cluster!.worker!.id;
+    const port = 4000 + cluster!.worker!.id;
 
     server.listen(port, () => {
       console.log(`Worker #${process.pid} is running on port ${port}`);
