@@ -7,7 +7,7 @@ export default class Database {
     this.users = [];
   }
 
-  getUsers() {
+  getUser() {
     return this.users;
   }
 
@@ -24,5 +24,13 @@ export default class Database {
       this.users[index] = { ...this.users[index], ...user };
     }
     return this.users[index];
+  }
+  userDelete(userId: string) {
+    const user = this.users.find((user) => user.id === userId);
+    console.log(user);
+    if (user) {
+      this.users = this.users.filter((user) => user.id !== userId);
+    }
+    return user;
   }
 }

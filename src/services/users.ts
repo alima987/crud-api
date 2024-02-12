@@ -13,7 +13,7 @@ export const sendResp = (res: ServerResponse, statusCode: number, message: strin
 
 export const users = new Database();
 export const getUser = (req: IncomingMessage, res: ServerResponse): void => {
-  const usersData = users.getUsers();
+  const usersData = users.getUser();
   res.setHeader('Content-Type', 'application/json');
   res.statusCode = 200;
   res.end(JSON.stringify(usersData));
@@ -131,4 +131,19 @@ export const userUpdate = async (
       sendResp(res, 400, 'Error parsing request body');
     }
   });
+};
+export const userDelete = (req: IncomingMessage, res: ServerResponse, id: string): void => {
+  if (!validate(id)) {
+    sendResp(res, 400, 'Invalid userId');
+  } else {
+    const user = users.userDelete(id);
+
+    if (!user) {
+      sendResp(res, 404, 'User not found');
+    } else {
+      res.setHeader('Content-Type', 'application/json');
+      res.statusCode = 204;
+      res.end();
+    }
+  }
 };
