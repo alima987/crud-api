@@ -22,4 +22,11 @@ export default class Database {
       }
       return this.users[index]
     }
+    deleteUser(userId: string) {
+      const user = this.users.find((user) => user.id === userId)
+      if (user) {
+        this.users = this.users.filter((user) => user.id !== userId)
+      }
+      return user
+    }
 }

@@ -1,5 +1,5 @@
 import { IncomingMessage, ServerResponse } from "http"
-import { createUser, getUser, getUsersById, sendResponse, updateUser } from "../controllers/user"
+import { createUser, deleteUser, getUser, getUsersById, sendResponse, updateUser } from "../controllers/user"
 import { parse } from 'url';
 
 export const router = (req: IncomingMessage, res: ServerResponse) => {
@@ -31,7 +31,14 @@ export const router = (req: IncomingMessage, res: ServerResponse) => {
           } else {
             sendResponse(res, 404, 'User not found');
           }
-          break
+          break;
+        case 'DELETE':
+          if (/^\/api\/users\/[\w-]+$/.test(req.url)) {
+            const userId = req.url.split('/').pop()
+            userId && deleteUser(req, res, userId)
+          } else {
+            sendResponse(res, 404, 'User not found');
+          }
         default:
           break
       }

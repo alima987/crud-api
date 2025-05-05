@@ -90,3 +90,17 @@ export const updateUser = (req: IncomingMessage, res: ServerResponse, userId: st
     }
   })
 }
+
+export const deleteUser = (req: IncomingMessage, res: ServerResponse, userId: string) => {
+  if (!validate(userId)) {
+    sendResponse(res, 400, 'Invalid userId');
+  } else {
+    const user = users.deleteUser(userId)
+    if (!user) {
+      sendResponse(res, 404, 'User not found');
+    } else {
+      res.writeHead(204, { 'Content-Type': 'application/json' });
+      res.end();
+    }
+  }
+}
