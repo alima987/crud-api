@@ -1,5 +1,5 @@
 import { IncomingMessage, ServerResponse } from "http"
-import { getUser, getUsersById, sendResponse } from "../controllers/user"
+import { createUser, getUser, getUsersById, sendResponse, updateUser } from "../controllers/user"
 import { parse } from 'url';
 
 export const router = (req: IncomingMessage, res: ServerResponse) => {
@@ -19,8 +19,17 @@ export const router = (req: IncomingMessage, res: ServerResponse) => {
           break;
         case 'POST':
           if (/^\/api\/users\/?$/.test(req.url)) {
-
-            
+            createUser(req, res)
+          } else {
+            sendResponse(res, 404, 'Invalid endpoint');
+          }
+          break;
+        case 'PUT':
+          if (/^\/api\/users\/[\w-]+$/.test(req.url)) {
+            const userId = req.url.split('/').pop()
+            userId && updateUser(req, res, userId)
+          } else {
+            sendResponse(res, 404, 'User not found');
           }
           break
         default:

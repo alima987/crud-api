@@ -15,4 +15,11 @@ export default class Database {
       this.users.push(user)
       return user
     }
+    updateUser(user: User, userId: string) {
+      const index = this.users.findIndex((user) => user.id === userId)
+      if (index !== -1) {
+        this.users[index] = { ...this.users[index], ...user}
+      }
+      return this.users[index]
+    }
 }
