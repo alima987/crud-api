@@ -1,7 +1,7 @@
 import * as http from 'http';
 
 import { router } from './routes/router';
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5002
 const server = http.createServer((req, res) => {
     router(req, res)
 })

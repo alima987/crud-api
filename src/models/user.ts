@@ -7,4 +7,3 @@ export interface User {
   hobbies: string[];
 }
 
-export const users: User[] = [];
