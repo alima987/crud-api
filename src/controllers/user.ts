@@ -56,7 +56,7 @@ export const createUser = (req: IncomingMessage, res: ServerResponse) => {
     }
   })
 }
-export const updateUser = (req: IncomingMessage, res: ServerResponse, userId: string) => {
+export const updateUser = async(req: IncomingMessage, res: ServerResponse, userId: string) => {
   let body = ''
   req.on('data', (chunk) => {
     body += chunk
@@ -69,20 +69,19 @@ export const updateUser = (req: IncomingMessage, res: ServerResponse, userId: st
       } else {
         const data = await JSON.parse(body)
         const { username, age, hobbies } = data
-        if (!username || !age || !hobbies) {
+        if (username === undefined || age === undefined || hobbies === undefined) {
           sendResponse(res, 400, 'Missing required fields');
         } else {
           const user = users.updateUser(data, userId)
           if (!user) {
             sendResponse(res, 404, 'User not found');
-          } else {
+          }
           user.username = username || user.username 
           user.age = age || user.age
           user.hobbies = hobbies || user.hobbies
 
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify(user));
-          }
         }
         }
     } catch (error) {

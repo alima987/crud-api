@@ -2,7 +2,7 @@ import { IncomingMessage, ServerResponse } from "http"
 import { createUser, deleteUser, getUser, getUsersById, sendResponse, updateUser } from "../controllers/user"
 import { parse } from 'url';
 
-export const router = (req: IncomingMessage, res: ServerResponse) => {
+export const router = async (req: IncomingMessage, res: ServerResponse) => {
   try {
     if (req.url) {
       switch (req.method) {
@@ -27,7 +27,7 @@ export const router = (req: IncomingMessage, res: ServerResponse) => {
         case 'PUT':
           if (/^\/api\/users\/[\w-]+$/.test(req.url)) {
             const userId = req.url.split('/').pop()
-            userId && updateUser(req, res, userId)
+            userId && (await updateUser(req, res, userId))
           } else {
             sendResponse(res, 404, 'User not found');
           }
@@ -42,15 +42,11 @@ export const router = (req: IncomingMessage, res: ServerResponse) => {
         default:
           break
       }
+    } else {
+      sendResponse(res, 404, 'Invalid endpoint');
     }
 
-    // если не совпало ни с одним маршрутом:
-    res.writeHead(404, { 'Content-Type': 'text/plain' })
-    res.end('Not found')
-
   } catch (error) {
-    console.error(error)
-    res.writeHead(500, { 'Content-Type': 'text/plain' })
-    res.end('Internal Server Error')
+    sendResponse(res, 500, 'Internal Server Error');
   }
 }
