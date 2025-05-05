@@ -1,10 +1,11 @@
 import * as http from 'http';
-const port = 3000
+
+import { router } from './routes/router';
+const PORT = process.env.PORT || 5000
 const server = http.createServer((req, res) => {
-    res.writeHead(200, { 'Content-Type': 'application/json' })
-    res.end(JSON.stringify({
-        data: 'Hello world!'
-    }))
+    router(req, res)
 })
 
-server.listen(port)
+server.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+  })
