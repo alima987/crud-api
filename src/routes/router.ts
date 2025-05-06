@@ -40,7 +40,7 @@ export const router = async (req: IncomingMessage, res: ServerResponse) => {
             sendResponse(res, 404, 'User not found');
           }
         default:
-          break
+          break;
       }
     } else {
       sendResponse(res, 404, 'Invalid endpoint');
