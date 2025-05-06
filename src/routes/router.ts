@@ -1,6 +1,5 @@
 import { IncomingMessage, ServerResponse } from "http"
 import { createUser, deleteUser, getUser, getUsersById, sendResponse, updateUser } from "../controllers/user"
-import { parse } from 'url';
 
 export const router = async (req: IncomingMessage, res: ServerResponse) => {
   try {

@@ -1,11 +1,13 @@
-import * as http from 'http';
+import http, { Server, IncomingMessage, ServerResponse } from 'http';
 import { config } from 'dotenv';
 import { router } from './routes/router';
 import  cluster, { Worker } from 'cluster';
 import process from 'process';
-import { IncomingMessage, ServerResponse } from "http"
 import os from 'os'
+import Database from './db/database';
 config();
+export let server: http.Server;
+export const users = new Database()
 const port= process.env.PORT || 5000
 const numCPUs = os.cpus().length
 const workers: Worker[] = []
@@ -63,14 +65,14 @@ if (process.env.MODE === 'cluster') {
             router(req, res)
             console.log(`Worker #${process.pid} received request`);
         })
-        const port = 4000 + cluster!.worker!.id
+        const port = 4000 + cluster!.worker!.id;
         
         server.listen(port, () => {
             console.log(`Worker ${process.pid} is running on port ${port}`);
         })
     }
 } else {
-    const server = http.createServer((req, res) => {
+     const server = http.createServer((req, res) => {
         router(req, res)
     })
     
