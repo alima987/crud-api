@@ -13,7 +13,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "webpack-node-externals": "^3.0.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",

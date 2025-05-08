@@ -49,14 +49,13 @@ export const createUser = (req: IncomingMessage, res: ServerResponse) => {
         }
         const user = users.createUser(newUser)
         res.writeHead(201, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(user));
       }
     } catch (error) {
       sendResponse(res, 400, 'Error parsing request body');
     }
   })
 }
-export const updateUser = async(req: IncomingMessage, res: ServerResponse, userId: string) => {
+export const updateUser = async(req: IncomingMessage, res: ServerResponse, userId: string,) => {
   let body = ''
   req.on('data', (chunk) => {
     body += chunk
@@ -69,20 +68,18 @@ export const updateUser = async(req: IncomingMessage, res: ServerResponse, userI
       } else {
         const data = await JSON.parse(body)
         const { username, age, hobbies } = data
-        if (username === undefined || age === undefined || hobbies === undefined) {
-          sendResponse(res, 400, 'Missing required fields');
-        } else {
           const user = users.updateUser(data, userId)
           if (!user) {
             sendResponse(res, 404, 'User not found');
+          } else {
+            user.username = username || user.username 
+            user.age = age || user.age
+            user.hobbies = hobbies || user.hobbies
+  
+            res.setHeader('Content-Type', 'application/json');
+            res.statusCode = 200;
+            res.end(JSON.stringify(user));
           }
-          user.username = username || user.username 
-          user.age = age || user.age
-          user.hobbies = hobbies || user.hobbies
-
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify(user));
-        }
         }
     } catch (error) {
       sendResponse(res, 400, 'Error parsing request body');

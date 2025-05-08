@@ -11,13 +11,13 @@ describe('API test', () => {
        expect(response.body).toEqual([])
     })
     it('POST /api/users - should create new user', async() => {
-       const newPost = { 'username': "Alice", 'age': 30, "hobbies": ['running']}
+        const newPost = { "username": "Alice", "age": 30, "hobbies": ["running"]}
        const response = await request(server).post('/api/users').send(newPost);
        expect(response.statusCode).toBe(201)
        expect(response.body).toMatchObject(newPost)
     })
     it('GET /api/users/:id - should return the created user', async() => {
-        const newPost = { 'username': "Alice", 'age': 30, "hobbies": ['running']}
+        const newPost = { "username": "Alice", "age": 30, "hobbies": ["running"]}
         const response = await request(server).post('/api/users').send(newPost);
         const userId = response.body.id
         const getRes = await request(server).get(`/api/users/${userId}`)
@@ -25,7 +25,7 @@ describe('API test', () => {
         expect(getRes.body).toMatchObject(newPost)
     })
     it('PUT /api/users/:id - should update user', async() => {
-        const newPost = { 'username': "Alice", 'age': 30, "hobbies": ['running']}
+        const newPost = { "username": "Alice", "age": 30, "hobbies": ["running"]}
         const response = await request(server).post('/api/users').send(newPost);
         const userId = response.body.id
         const updatedPost = { ...newPost, 'username': "Monica", 'age': 25 }
@@ -34,7 +34,7 @@ describe('API test', () => {
         expect(getRes.body).toMatchObject(updatedPost)
     })
     it('DELETE api/users/{userId} - should delete the created object by id', async() => {
-        const newPost = { 'username': "Alice", 'age': 30, "hobbies": ['running']}
+        const newPost = { "username": "Alice", "age": 30, "hobbies": ["running"]}
         const response = await request(server).post('/api/users').send(newPost);
         const userId = response.body.id
         const getRes = await request(server).delete(`/api/users/${userId}`);
