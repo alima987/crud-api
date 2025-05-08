@@ -6,7 +6,7 @@ import process from 'process';
 import os from 'os'
 import Database from './db/database';
 config();
-export let server: http.Server;
+export let server: Server;
 export const users = new Database()
 const port= process.env.PORT || 5000
 const numCPUs = os.cpus().length
@@ -61,7 +61,7 @@ if (process.env.MODE === 'cluster') {
           workers.push(newWorker)
         })
     } else {
-        const server = http.createServer((req, res) => {
+        server = http.createServer((req, res) => {
             router(req, res)
             console.log(`Worker #${process.pid} received request`);
         })
@@ -72,7 +72,7 @@ if (process.env.MODE === 'cluster') {
         })
     }
 } else {
-     const server = http.createServer((req, res) => {
+    server = http.createServer((req, res) => {
         router(req, res)
     })
     

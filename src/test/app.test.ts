@@ -1,10 +1,9 @@
 import request from 'supertest';
 import { server } from "../app";
-console.log("server", server)
 
-describe('API test', () => {
-    afterAll(() => {
-        server.close();
+describe('API test', () => {   
+    afterAll((done) => {
+        server.close(done);
     });
     it('GET /api/users - should return empty array initially', async() => {
        const response = await request(server).get('/api/users');
@@ -29,9 +28,18 @@ describe('API test', () => {
         const newPost = { 'username': "Alice", 'age': 30, "hobbies": ['running']}
         const response = await request(server).post('/api/users').send(newPost);
         const userId = response.body.id
-        const updatedPost = { 'username': "Monica", 'age': 25 }
+        const updatedPost = { ...newPost, 'username': "Monica", 'age': 25 }
         const getRes = await request(server).put(`/api/users/${userId}`).send(updatedPost);
         expect(getRes.statusCode).toBe(200)
         expect(getRes.body).toMatchObject(updatedPost)
+    })
+    it('DELETE api/users/{userId} - should delete the created object by id', async() => {
+        const newPost = { 'username': "Alice", 'age': 30, "hobbies": ['running']}
+        const response = await request(server).post('/api/users').send(newPost);
+        const userId = response.body.id
+        const getRes = await request(server).delete(`/api/users/${userId}`);
+        expect(getRes.statusCode).toBe(204)
+        const getResponse = await request(server).get(`/api/users/${userId}`);
+        expect(getResponse.status).toBe(404);
     })
 })
