@@ -8,9 +8,6 @@ export default class Database {
     getUsers() {
       return this.users
     }
-    setUsers(users: User[]) {
-      this.users = users;
-    }
     getUserById (userId: string) {
       return this.users.find((user) => user.id === userId)
     }

@@ -49,6 +49,7 @@ export const createUser = (req: IncomingMessage, res: ServerResponse) => {
         }
         const user = users.createUser(newUser)
         res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(user));
       }
     } catch (error) {
       sendResponse(res, 400, 'Error parsing request body');
